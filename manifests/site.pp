@@ -1,20 +1,37 @@
-exec { "app-get update":
+exec {"apt-get update":
+
   path => "/usr/bin",
+
 }
 
-package { "apache2":
+package {"apache2":
+
   ensure => present,
+
   require => Exec["apt-get update"],
+
 }
 
-services { "apache2":
+service { "apache2":
+
   ensure => "running",
+
   require => Package["apache2"],
+
 }
 
-file {"/var/www/demo":
+file {"/var/www":
+
   ensure => "link",
+
   target => "/vagrant/www",
+
   require => Package["apache2"],
-  notify => Service["apache2"]
+
+  notify => Service["apache2"],
+
+  replace => yes,
+
+  force => true,
+
 }
